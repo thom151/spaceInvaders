@@ -2,6 +2,7 @@ import pygame
 from constants import *
 from ship import *
 from bullet import *
+from aliens import *
 
 
 def main():
@@ -16,13 +17,36 @@ def main():
     # GROUPINGS
     drawable = pygame.sprite.Group()
     updatable = pygame.sprite.Group()
-    shots = pygame.sprite.Group()
+    bullets = pygame.sprite.Group()
+    aliens = pygame.sprite.Group()
 
     Ship.containers = (updatable, drawable)
     Bullet.containers = (drawable, updatable)
+    Skull.containers = (aliens, drawable, updatable)
+    Crab.containers = (aliens, drawable, updatable)
+    Squid.containers = (aliens, drawable, updatable)
+    Bullet.containers = (bullets, updatable, drawable)
 
-    ship = Ship(SCREEN_WIDTH / 2, SCREEN_HEIGHT-(SCREEN_HEIGHT/3))
-    bullet = Bullet(SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
+    crabs = [[None for j in range(ALIEN_COLS)]
+             for i in range(SKULL_AND_CRAB_ROWS)]
+
+    skulls = [[None for j in range(ALIEN_COLS)]
+              for i in range(SKULL_AND_CRAB_ROWS)]
+    squids = [None for j in range(ALIEN_COLS)]
+
+    for i in range(ALIEN_ROWS):
+        for j in range(ALIEN_COLS):
+            if i < 1:
+                squids[j] = (Squid(BORDER + (ALIEN_WIDTH*j),
+                             SCREEN_HEIGHT/4+(i*ALIEN_WIDTH)))
+            elif 1 <= i <= 2:
+                crabs[i-1][j-1] = (Crab(BORDER+(ALIEN_WIDTH*j),
+                                        SCREEN_HEIGHT/4+(i*ALIEN_WIDTH)))
+            else:
+                skulls[i-3][j-3] = (Skull(BORDER + (ALIEN_WIDTH*j),
+                                          SCREEN_HEIGHT/4+(i*ALIEN_WIDTH)))
+
+    ship = Ship(SCREEN_WIDTH / 2, SCREEN_HEIGHT-(SCREEN_HEIGHT/5))
 
     # GAME LOOP
     while True:
@@ -31,6 +55,13 @@ def main():
                 return
         for obj in updatable:
             obj.update(dt)
+
+        for alien in aliens:
+            for bullet in bullets:
+                if bullet.collides_with(alien):
+                    bullet.kill()
+                    alien.kill()
+
         screen.fill("black")
         for obj in drawable:
             obj.draw(screen)

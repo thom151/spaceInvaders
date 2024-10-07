@@ -19,3 +19,6 @@ class Bullet(pygame.sprite.Sprite):
 
     def update(self, dt):
         self.position.y -= BULLET_SPEED * dt
+
+    def collides_with(self, other):
+        return self.position.distance_to(other.position) <= (ALIEN_WIDTH + 6)/2
