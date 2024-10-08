@@ -30,6 +30,9 @@ class Skull(Aliens):
             [1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1]
         ]
 
+    def update(self, dt, alien_count):
+        self.position.x += dt*(ALIEN_SPEED)
+
     def draw(self, screen):
         for i in range(len(self.skull_structure)):
             for j in range(len(self.skull_structure[i])):
