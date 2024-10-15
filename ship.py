@@ -11,10 +11,13 @@ class Ship(pygame.sprite.Sprite):
             super().__init_()
         self.x = int(x)
         self.y = int(y)
+        self.lives = 3
+        self.score = 0
         self.shoot_timer = 0
         self._spacebar_pressed = False
         self.position = pygame.Vector2(x, y)
         self.velocity = pygame.Vector2(0, 0)
+        self.rect = pygame.Rect(x, y, SHIP_HEIGHT*SIZE, SHIP_WIDTH*SIZE)
         self.ship_structure = [
             [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0],
@@ -49,11 +52,13 @@ class Ship(pygame.sprite.Sprite):
                 self._spacebar_pressed = True
         else:
             self._spacebar_pressed = False
+        self.rect.topleft = (self.position.x, self.position.y)
 
     def move(self, dt):
         self.position.x += dt*SHIP_SPEED
 
     def shoot(self):
+        shoot_sfx.play()
         if self.shoot_timer > 0:
             return
         self.shoot_timer = SHIP_SHOOT_COOLDOWN
